@@ -7,3 +7,5 @@ extern bool threat_found;
 extern unsigned int ScanOffset;
 extern unsigned int ScanSize;
 extern void* ThreatPoint;
+extern void* hMpEngn;
+extern void* scan_reply;

@@ -16,5 +16,6 @@ DWORD GetIncremBufferSize(PVOID buf, PULONGLONG BufSize);
 //PWCHAR GetStreamName(PVOID fd);
 
 extern void _stdcall ScanInfoHook();
-extern void setScanInfoHook(HMODULE hMpenigne);
+extern void setScanInfoHook();
+extern void _stdcall setGetScanRelpyHook();
 extern void DumpHex(const void* data, size_t size);

@@ -14,7 +14,6 @@
 #include "utils/glob.h"
 
 typedef DWORD (_cdecl* pRsignal)(PHANDLE hKrnl, DWORD flag, PVOID bootOption, DWORD size);
-HMODULE hMpEngn = NULL;
 WCHAR* FILENAME = NULL;
 
 void getArgument(int argc, wchar_t* argv[], SCANSTREAM_PARAMS* scan_param, ENGINE_CONFIG* engine_config_t) {
@@ -26,7 +25,8 @@ void getArgument(int argc, wchar_t* argv[], SCANSTREAM_PARAMS* scan_param, ENGIN
         }
         else if (lstrcmpW(L"-r", *(argv + i)) == 0) {
             GET_SIMULAR = true;
-            setScanInfoHook(hMpEngn); // Works only 1.1.16000.6(x86) version mpengine.dll
+            setScanInfoHook(); // Works only 1.1.16000.6(x86) version mpengine.dll
+            setGetScanRelpyHook();
         }
         else if (lstrcmpW(L"-h", *(argv + i)) == 0) {
             engine_config_t->EngineFlags |= ENGINE_HEURISTICS;
@@ -93,7 +93,7 @@ int wmain(int argc, wchar_t* argv[]) {
         wprintf(L"No input file\n");
         return -1;
     }
-    __rsignal = (pRsignal)GetProcAddress(hMpEngn, "__rsignal");
+    __rsignal = (pRsignal)GetProcAddress((HMODULE)hMpEngn, "__rsignal");
     if (!__rsignal) {
         LogMessage("Can't find __rsignal exported API");
         return -1;

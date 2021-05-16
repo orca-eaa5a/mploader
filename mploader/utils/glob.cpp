@@ -8,3 +8,5 @@ bool threat_found = false;
 unsigned int ScanOffset = false;
 unsigned int ScanSize = false;
 void* ThreatPoint = nullptr;
+void* hMpEngn = nullptr;
+void* scan_reply = nullptr;

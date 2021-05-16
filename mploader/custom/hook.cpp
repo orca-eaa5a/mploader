@@ -1,10 +1,35 @@
 #include "utils/utils.h"
+#include "utils/glob.h"
+
+void _stdcall GetScanReplyHook() {
+    __volatile("mov eax, eax");
+    __asm {
+        mov scan_reply, esi;
+    }
+    return;
+}
+
+void _stdcall setGetScanRelpyHook() {
+    PVOID pScanReply = (PVOID)((DWORD)hMpEngn + 0x2d91cf); //SCAN_REPLY *__thiscall SCAN_REPLY::SCAN_REPLY
+    DWORD HookOffset = 0x7a;
+    PVOID HookPoint = PVOID((DWORD)pScanReply + HookOffset);
+    PVOID hooker_addr = &GetScanReplyHook;
+    DWORD flProtectOld = 0;
+    DWORD jmp_offset = (DWORD)hooker_addr - (DWORD)HookPoint - 5;
+    BYTE call[5] = {
+        0xE8,
+    };
+    for (int i = 3; i >= 0; --i)
+    {
+        call[4 - i] = (htonl((DWORD)jmp_offset) >> 8 * i) & 0xFF;
+    }
+    VirtualProtect(pScanReply, 0x5, PAGE_READWRITE, &flProtectOld);
+    memcpy(HookPoint, &call, 5);
+    VirtualProtect(pScanReply, 0x5, flProtectOld, &flProtectOld);
+}
 
 void _stdcall ScanInfoHook() {
     __volatile("mov eax, eax");
-    __asm {
-        sub esp, 0x100;
-    }
     DWORD eax_tmp = 0;
     DWORD ebx_tmp = 0;
     DWORD ecx_tmp = 0;
@@ -22,20 +47,10 @@ void _stdcall ScanInfoHook() {
         mov esi_tmp, esi;
         mov edi_tmp, edi;
     }
-    WCHAR* mpeg = L"mpengine.dll";
-    PVOID pMpeng = (PVOID)GetModuleHandleW(mpeg);
-    PVOID pScanInfoAuto = (PVOID)((DWORD)pMpeng + 0x2ca986);
-    PVOID ret1 = (PVOID)((DWORD)pScanInfoAuto + 0xC); // chage
-    PVOID ret2 = (PVOID)((DWORD)pScanInfoAuto + 0x1B); // not chnage
-    WCHAR* related_threat = NULL;
-
-    __volatile("mov eax, eax");
-    __asm {
-        mov ecx, ecx_tmp;
-        add ecx, 0xC;
-        mov esi, ecx;
-        mov related_threat, esi;
-    }
+    PVOID pScanInfoAuto = (PVOID)((DWORD)hMpEngn + 0x2ca986);
+    PVOID ret1 = (PVOID)((DWORD)pScanInfoAuto + 0xC); // chage 0x20
+    PVOID ret2 = (PVOID)((DWORD)pScanInfoAuto + 0x1B); // not chnage 0x24
+    CHAR* related_threat = ((PSCAN_REPLY)scan_reply)->VirusName;
     if (*related_threat != NULL) {
         LogMessage("related thrats : %s", related_threat);
     }
@@ -49,23 +64,23 @@ void _stdcall ScanInfoHook() {
         mov esi, esi_tmp;
         mov edi, edi_tmp;
 
-        add esp, 0x17C;
+        add esp, 0x74;
         mov ebx, ebp;
         pop ebp;
         cmp byte ptr[edi + 0A4h], 0;
         jz  NotChange;
-        push[ebx - 0x28];
+        push[ebx - 0x20];
         xor ebx, ebx;
         ret;
     NotChange:
-        push[ebx - 0x2C];
+        push[ebx - 0x24];
         xor ebx, ebx;
         ret;
     }
 }
 
-void setScanInfoHook(HMODULE hMpenigne) {
-    PVOID pScanInfoAuto = (PVOID)((DWORD)hMpenigne + 0x2ca986);
+void setScanInfoHook() {
+    PVOID pScanInfoAuto = (PVOID)((DWORD)hMpEngn + 0x2ca986);
     DWORD HookOffset = 0x3;
     PVOID HookPoint = PVOID((DWORD)pScanInfoAuto + HookOffset);
     PVOID hooker_addr = &ScanInfoHook;
