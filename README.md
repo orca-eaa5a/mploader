@@ -59,7 +59,7 @@ mploader -f "target_file"
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   git clone https://github.com/orca-eaa5a/mploader.git
    ```
    
 2. Locate the MPEngine and AV Container at "engine" directory
@@ -77,7 +77,7 @@ mploader -f "target_file"
    -r (related)   : Get related threats of target file which was detected
    -h (heuristic) : Enable heuristic scan
    -u (unpack)    : Enable unpacking method
-   -t (trace)	  : Get the file offset of threats detected
+   -t (trace)     : Get the file offset of threats detected
    ```
 
 <!-- LICENSE -->
