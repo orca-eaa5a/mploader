@@ -12,12 +12,13 @@ enum {
     SCAN_MEMBERNAME      = 1 << 7,
     SCAN_FILENAME        = 1 << 8,
     SCAN_FILETYPE        = 1 << 9,
-    SCAN_TOPLEVEL        = 1 << 18,
-    SCAN_PACKERSTART     = 1 << 19,
     SCAN_PACKEREND       = 1 << 12,
-    SCAN_ISARCHIVE       = 1 << 16,
     SCAN_CORRUPT         = 1 << 13,
     SCAN_UNKNOWN         = 1 << 15, // I dunno what this means
+    SCAN_ISARCHIVE       = 1 << 16,
+    SCAN_TOPLEVEL        = 1 << 18,
+    SCAN_PACKERSTART     = 1 << 19,
+    SCAN_NORESULT        = 1 << 20,
     SCAN_VIRUSFOUND      = 1 << 27,
 };
 

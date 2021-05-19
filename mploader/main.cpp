@@ -38,6 +38,11 @@ void getArgument(int argc, wchar_t* argv[], SCANSTREAM_PARAMS* scan_param, ENGIN
             TRACE_FLAG = true;
             scan_param->ScanState->ClientNotifyCallback = ThreatTraceCallback;
         }
+        else if (lstrcmpW(L"-l", *(argv + i)) == 0) {
+            ApiInfoJson = (PVOID)ReadExportAPIInfo("files\\exp_info.json");
+            ApiInfoSize = cJSON_GetArraySize((cJSON*)ApiInfoJson);
+            setGetAPIHook();
+        }
     }
 }
 

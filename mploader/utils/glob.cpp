@@ -10,3 +10,5 @@ unsigned int ScanSize = false;
 void* ThreatPoint = nullptr;
 void* hMpEngn = nullptr;
 void* scan_reply = nullptr;
+void* ApiInfoJson = nullptr;
+unsigned int ApiInfoSize = 0;

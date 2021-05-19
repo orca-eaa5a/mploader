@@ -13,7 +13,10 @@ DWORD FullScanNotifyCallback(PSCAN_REPLY Scan)
         LogMessage("Scanning archive member %s", Scan->VirusName);
     }
     if (Scan->Flags & SCAN_FILENAME) {
-        LogMessage("Scanning %s", Scan->FileName);
+        if (Scan->Flags & SCAN_TOPLEVEL)
+            LogMessage("Scan Start %s", Scan->FileName);
+        else
+            LogMessage("Scan %s", Scan->FileName);
     }
     if (Scan->Flags & SCAN_PACKERSTART) {
         LogMessage("Packer %s identified.", Scan->VirusName);
@@ -29,6 +32,10 @@ DWORD FullScanNotifyCallback(PSCAN_REPLY Scan)
     }
     if (Scan->Flags & 0x08000022) {
         LogMessage("Threat %s identified.", Scan->VirusName);
+    }
+
+    if (Scan->Flags & SCAN_NORESULT) {
+        LogMessage("No Threat identified in %s", Scan->FileName);
     }
 
     return 0;

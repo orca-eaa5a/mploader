@@ -9,3 +9,5 @@ extern unsigned int ScanSize;
 extern void* ThreatPoint;
 extern void* hMpEngn;
 extern void* scan_reply;
+extern void* ApiInfoJson;
+extern unsigned int ApiInfoSize;

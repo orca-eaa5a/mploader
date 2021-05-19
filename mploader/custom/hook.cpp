@@ -100,3 +100,64 @@ void setScanInfoHook() {
     memcpy(PVOID((DWORD)HookPoint + 1 + 4), &ret, sizeof(BYTE));
     VirtualProtect(pScanInfoAuto, 0x5, flProtectOld, &flProtectOld);
 }
+
+void setGetAPIHook() {
+    DWORD HookPoint = 0x5a53f9bd;
+    PVOID hooker_addr = &GetAPIHook;
+    DWORD flProtectOld = 0;
+    DWORD jmp_offset = (DWORD)hooker_addr - (DWORD)HookPoint - 5;
+    BYTE call[5] = {
+        0xE8,
+    };
+    for (int i = 3; i >= 0; --i)
+    {
+        call[4 - i] = (htonl((DWORD)jmp_offset) >> 8 * i) & 0xFF;
+    }
+    VirtualProtect((PVOID)HookPoint, 0x5, PAGE_READWRITE, &flProtectOld);
+    memcpy((PVOID)HookPoint, &call, 5);
+    VirtualProtect((PVOID)HookPoint, 0x5, flProtectOld, &flProtectOld);
+}
+
+void __cdecl GetAPIHook() {
+    __volatile("mov eax, eax");
+    DWORD eax_tmp = 0;
+    DWORD ebx_tmp = 0;
+    DWORD ecx_tmp = 0;
+    DWORD edx_tmp = 0;
+    DWORD esi_tmp = 0;
+    DWORD edi_tmp = 0;
+    DWORD origin_func = 0x5a53fc80; // pe_notify_api_call
+    DWORD api_addr = 0;
+    __volatile("mov eax, eax");
+    __asm {
+        mov eax_tmp, eax;
+        mov ebx_tmp, ebx;
+        mov ecx_tmp, ecx;
+        mov edx_tmp, edx;
+        mov esi_tmp, esi;
+        mov edi_tmp, edi;
+        
+        mov eax, [ebp + 8];
+        mov api_addr, eax;
+    }
+    GetAPIbyAddress(api_addr, (cJSON*)ApiInfoJson, ApiInfoSize);
+    __volatile("mov eax, eax");
+    __asm {
+        pop edi;
+        pop esi;
+        pop ebx;
+        mov esp, ebp;
+
+        mov eax, origin_func;
+        mov ebx, ebx_tmp;
+        mov ecx, ecx_tmp;
+        mov edx, edx_tmp;
+        mov esi, esi_tmp;
+        mov edi, edi_tmp;
+        
+        pop ebp;
+        push eax;
+        xor eax, eax;
+        ret;
+    }
+}
