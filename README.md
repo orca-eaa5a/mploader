@@ -75,7 +75,7 @@ mploader -f "target_file"
    ```sh
    -f file_name   : Target file to scan
    -r (related)   : Get related threats of target file which was detected
-   -h (heuristic) : Enable heuristic scan
+   -l (log)       : Log API call
    -u (unpack)    : Enable unpacking method
    -t (trace)     : Get the file offset of threats detected
    ```
