@@ -1,5 +1,7 @@
 #include "utils/utils.h"
 #include "utils/glob.h"
+#include "lib/cJSON.h"
+#include "lib/log.h"
 
 void _stdcall GetScanReplyHook() {
     __volatile("mov eax, eax");
@@ -7,6 +9,49 @@ void _stdcall GetScanReplyHook() {
         mov scan_reply, esi;
     }
     return;
+}
+
+void _stdcall GetX86ContextInfoHook() {
+    __volatile("mov eax, eax");
+    __asm {
+        mov x86_emu_context, eax;
+    }
+    _asm { // original function
+        pop ecx; //ebx
+        pop ecx; //ecx
+        pop ecx; //esi
+        add esp, 0x40;
+
+        pop ebp; //ebp
+        mov ecx, [ebp - 0xC];
+        mov fs:[0] , ecx;
+        pop ecx;
+        pop edi;
+        pop edi;
+        pop esi;
+        pop ebx;
+        mov esp, ebp;
+        pop ebp;
+        push ecx;
+        bnd ret;
+    }
+}
+
+void _stdcall setGetX86ContextInfoHook() {
+    DWORD HookPoint = 0x5a565930;
+    PVOID hooker_addr = &GetX86ContextInfoHook;
+    DWORD flProtectOld = 0;
+    DWORD jmp_offset = (DWORD)hooker_addr - (DWORD)HookPoint - 5;
+    BYTE call[5] = {
+        0xE8,
+    };
+    for (int i = 3; i >= 0; --i)
+    {
+        call[4 - i] = (htonl((DWORD)jmp_offset) >> 8 * i) & 0xFF;
+    }
+    VirtualProtect((PVOID)HookPoint, 0x5, PAGE_READWRITE, &flProtectOld);
+    memcpy((PVOID)HookPoint, &call, 5);
+    VirtualProtect((PVOID)HookPoint, 0x5, flProtectOld, &flProtectOld);
 }
 
 void _stdcall setGetScanRelpyHook() {
@@ -128,6 +173,7 @@ void __cdecl GetAPIHook() {
     DWORD edi_tmp = 0;
     DWORD origin_func = 0x5a53fc80; // pe_notify_api_call
     DWORD api_addr = 0;
+    PIL_X86Context x86_emu_context = NULL;
     __volatile("mov eax, eax");
     __asm {
         mov eax_tmp, eax;
@@ -139,8 +185,9 @@ void __cdecl GetAPIHook() {
         
         mov eax, [ebp + 8];
         mov api_addr, eax;
+        mov x86_emu_context, edi;
     }
-    GetAPIbyAddress(api_addr, (cJSON*)ApiInfoJson, ApiInfoSize);
+    PrintEmuRegister((PIL_X86Context)x86_emu_context);
     __volatile("mov eax, eax");
     __asm {
         pop edi;

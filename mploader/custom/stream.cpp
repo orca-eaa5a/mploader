@@ -1,5 +1,10 @@
-#include "utils/utils.h"
+#include <Windows.h>
+#include <stdio.h>
 #include "utils/glob.h"
+
+#ifndef MAX_CHUNK_SIZE
+#define MAX_CHUNK_SIZE 0x1000
+#endif
 
 DWORD BufferSize = 0;
 

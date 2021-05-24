@@ -1,11 +1,8 @@
-#include <stdio.h>
 #include <Windows.h>
+#include <iostream>
 #include "mp_header/scanreply.h"
-#include "log.h"
-#include "cJSON.h"
-
-#define MAX_CHUNK_SIZE 0x1000
-#define EOB_SIGNATURE 0x8D8C8B8A
+#include "mp_header/x86_context.h"
+#include "lib/cJSON.h"
 
 DWORD FullScanNotifyCallback(PSCAN_REPLY Scan);
 DWORD ThreatTraceCallback(PSCAN_REPLY Scan);
@@ -21,6 +18,12 @@ extern void setGetAPIHook();
 extern void _stdcall setGetScanRelpyHook();
 extern void __cdecl GetAPIHook();
 extern void DumpHex(const void* data, size_t size);
+extern std::string integerToHSTR(unsigned int i);
 extern cJSON* ParseAPIInfo(BYTE* buffer);
-cJSON* ReadExportAPIInfo(char* FileName);
-void GetAPIbyAddress(DWORD addr, cJSON* json, DWORD length);
+extern cJSON* ReadExportAPIInfo(char* FileName);
+extern void GetAPIbyAddress(DWORD addr, cJSON* json, DWORD length);
+
+extern void _stdcall setGetX86ContextInfoHook();
+extern void _stdcall GetX86ContextInfoHook();
+
+extern void PrintEmuRegister(PIL_X86Context common_context);

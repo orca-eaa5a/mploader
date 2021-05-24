@@ -26,10 +26,10 @@ enum {
 };
 
 enum {
-    ENGINE_UNPACK               = 1 << 1,
-    ENGINE_HEURISTICS           = 1 << 3,
-    ENGINE_DISABLETHROTTLING    = 1 << 11,
-    ENGINE_PARANOID             = 1 << 12,
+    ENGINE_UNPACK               = 1 << 1,  // 2
+    ENGINE_HEURISTICS           = 1 << 3,  // 8
+    ENGINE_DISABLETHROTTLING    = 1 << 11, // 0x800
+    ENGINE_PARANOID             = 1 << 12, // 0x1000
     ENGINE_DISABLEANTISPYWARE   = 1 << 15, // if this flag set, mpengine will not load mpasbase.vdm
     ENGINE_DISABLEANTIVIRUS     = 1 << 16, // if this flag set, mpengine will not load mpavbase.vdm
     ENGINE_DISABLENETWORKDRIVES = 1 << 20,
@@ -50,8 +50,8 @@ typedef struct _ENGINE_CONFIG {
     PWCHAR QuarantineLocation;
     DWORD field_14;
     DWORD field_18;
-    DWORD field_1C;
-    DWORD field_20;
+    DWORD TempPath;
+    DWORD OfflinePath;
     DWORD field_24;
     DWORD field_28;
     DWORD field_2C;         // Setting this seems to cause packer to be reported.

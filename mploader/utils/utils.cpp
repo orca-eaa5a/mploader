@@ -1,4 +1,8 @@
 #include <stdio.h>
+#include <sstream>
+#include "utils/utils.h"
+
+using namespace std;
 
 void DumpHex(const void* data, size_t size) {
 	char ascii[17];
@@ -29,4 +33,11 @@ void DumpHex(const void* data, size_t size) {
 			}
 		}
 	}
+}
+
+std::string integerToHSTR(unsigned int i) {
+	std::stringstream sstream;
+	sstream << std::hex << i;
+
+	return sstream.str();
 }

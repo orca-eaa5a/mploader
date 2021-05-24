@@ -1,5 +1,7 @@
-#include "utils/utils.h"
+#include "lib/log.h"
 #include "utils/glob.h"
+#include "utils/utils.h"
+#include "mp_header/scanreply.h"
 // originally _thiscall
 
 DWORD FullScanNotifyCallback(PSCAN_REPLY Scan)

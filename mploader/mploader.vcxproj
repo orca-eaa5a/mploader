@@ -91,6 +91,7 @@
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,19 +145,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="custom\callback.cpp" />
+    <ClCompile Include="custom\tools.cpp" />
     <ClCompile Include="custom\hook.cpp" />
     <ClCompile Include="custom\stream.cpp" />
+    <ClCompile Include="lib\cJSON.c" />
+    <ClCompile Include="lib\c_table.cpp" />
     <ClCompile Include="utils\glob.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="utils\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="lib\c_table.h" />
     <ClInclude Include="mp_header\engineboot.h" />
     <ClInclude Include="mp_header\openscan.h" />
     <ClInclude Include="mp_header\rsignal.h" />
     <ClInclude Include="mp_header\scanreply.h" />
     <ClInclude Include="mp_header\streambuffer.h" />
-    <ClInclude Include="utils\log.h" />
+    <ClInclude Include="mp_header\x86_context.h" />
+    <ClInclude Include="lib\cJSON.h" />
+    <ClInclude Include="lib\log.h" />
     <ClInclude Include="utils\utils.h" />
     <ClInclude Include="utils\glob.h" />
   </ItemGroup>

@@ -33,6 +33,15 @@
     <ClCompile Include="custom\stream.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="custom\tools.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\cJSON.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\c_table.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mp_header\engineboot.h">
@@ -50,13 +59,22 @@
     <ClInclude Include="mp_header\streambuffer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="utils\log.h">
+    <ClInclude Include="lib\log.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="utils\utils.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="utils\glob.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\cJSON.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="mp_header\x86_context.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\c_table.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

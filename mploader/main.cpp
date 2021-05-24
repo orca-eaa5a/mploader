@@ -10,7 +10,7 @@
 #include "mp_header/scanreply.h"
 #include "mp_header/streambuffer.h"
 #include "utils/utils.h"
-#include "utils/log.h"
+#include "lib/log.h"
 #include "utils/glob.h"
 
 typedef DWORD (_cdecl* pRsignal)(PHANDLE hKrnl, DWORD flag, PVOID bootOption, DWORD size);
@@ -42,6 +42,10 @@ void getArgument(int argc, wchar_t* argv[], SCANSTREAM_PARAMS* scan_param, ENGIN
             ApiInfoJson = (PVOID)ReadExportAPIInfo("files\\exp_info.json");
             ApiInfoSize = cJSON_GetArraySize((cJSON*)ApiInfoJson);
             setGetAPIHook();
+            if (lstrcmpW(L"reg", *(argv + i + 1)) == 0) {
+                //setGetX86ContextInfoHook();
+                get_reg_flag = true;
+            }
         }
     }
 }

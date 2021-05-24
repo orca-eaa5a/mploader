@@ -43,7 +43,7 @@ So I offer the mpengine.dll which has the MS Debug Symbol and 2 Simple PoC (Thre
 <img src="resource/poc.gif" alt="Logo">
 
 ```sh
-mploader -f "target_file"
+mploader.exe -f "target_file"
 ```
 
 
@@ -73,11 +73,12 @@ mploader -f "target_file"
 * Options
 
    ```sh
-   -f file_name   : Target file to scan
-   -r (related)   : Get related threats of target file which was detected
-   -l (log)       : Log API call
-   -u (unpack)    : Enable unpacking method
-   -t (trace)     : Get the file offset of threats detected
+   -f file_name	: Target file to scan
+   -r (related)	: Get related threats of target file which was detected
+   -l (log)		: Log API call
+   -l reg			: Log API call with registry and stack
+   -u (unpack)		: Enable unpacking method
+   -t (trace)		: Get the file offset of threats detected
    ```
 
 <!-- LICENSE -->
