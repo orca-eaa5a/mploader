@@ -8,7 +8,6 @@
 #include "utils/glob.h"
 #include "utils/utils.h"
 
-
 cJSON* ParseAPIInfo(BYTE* buffer){
     cJSON *json = NULL;
     json = cJSON_Parse((const char*)buffer);
@@ -57,6 +56,8 @@ void GetAPIbyAddress(DWORD addr, cJSON* json, DWORD length) {
                     return;
                 }
             }
+            LogMessage("[%s] internal function : %x", DllName, addr);
+            return;
         }
     }
     LogMessage("NotEmulated Function [%x]", addr);
@@ -77,6 +78,7 @@ PVOID GetESP(PIL_X86Context common_context) {
 void PrintEmuRegister(PIL_X86Context common_context) {
     LogMessage("callee : [%x]", common_context->callee);
     GetAPIbyAddress(common_context->eip, (cJSON*)ApiInfoJson, ApiInfoSize);
+    
     if (get_reg_flag) {
         PVOID _v_esp = GetESP(common_context);
         ConsoleTable RegInfo(4);

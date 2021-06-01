@@ -13,4 +13,7 @@ extern void* scan_reply;
 extern void* ApiInfoJson;
 extern unsigned int ApiInfoSize;
 extern void* x86_emu_context;
+extern void* pe_var_t;
 extern unsigned int set_x32_86_context_func;
+extern unsigned int instruction_count;
+extern unsigned int loop_threshold;

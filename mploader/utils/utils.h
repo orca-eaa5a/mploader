@@ -22,8 +22,6 @@ extern std::string integerToHSTR(unsigned int i);
 extern cJSON* ParseAPIInfo(BYTE* buffer);
 extern cJSON* ReadExportAPIInfo(char* FileName);
 extern void GetAPIbyAddress(DWORD addr, cJSON* json, DWORD length);
-
-extern void _stdcall setGetX86ContextInfoHook();
-extern void _stdcall GetX86ContextInfoHook();
-
 extern void PrintEmuRegister(PIL_X86Context common_context);
+extern void ModifyLoopThreshold();
+extern void setModifyLoopThresholdHook();

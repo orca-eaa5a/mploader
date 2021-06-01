@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <Windows.h>
 #include <winsock.h>
-
 #pragma comment(lib,"ws2_32")
 
 #include "mp_header/engineboot.h"
@@ -34,6 +33,14 @@ void getArgument(int argc, wchar_t* argv[], SCANSTREAM_PARAMS* scan_param, ENGIN
         else if (lstrcmpW(L"-u", *(argv + i)) == 0) {
             engine_config_t->EngineFlags |= ENGINE_UNPACK;
         }
+        else if (lstrcmpW(L"-p", *(argv + i)) == 0) {
+            engine_config_t->EngineFlags |= ENGINE_PARANOID;
+        }
+        else if (lstrcmpW(L"-th", *(argv + i)) == 0) {
+            setModifyLoopThresholdHook();
+            loop_threshold = _wtoi(*(argv + (i + 1)));
+            i++;
+        }
         else if (lstrcmpW(L"-t", *(argv + i)) == 0) {
             TRACE_FLAG = true;
             scan_param->ScanState->ClientNotifyCallback = ThreatTraceCallback;
@@ -45,6 +52,7 @@ void getArgument(int argc, wchar_t* argv[], SCANSTREAM_PARAMS* scan_param, ENGIN
             if (lstrcmpW(L"reg", *(argv + i + 1)) == 0) {
                 //setGetX86ContextInfoHook();
                 get_reg_flag = true;
+                i++;
             }
         }
     }
@@ -137,6 +145,6 @@ int wmain(int argc, wchar_t* argv[]) {
     }
     res = __rsignal(&KernelHandle, RSIG_SCAN_STREAMBUFFER, &ScanParams, sizeof(ScanParams));
     fclose((FILE*)(PVOID)ScanDescriptor.UserPtr);
-
+    printf("%x", instruction_count);
     return 0;
 }
