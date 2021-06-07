@@ -77,5 +77,15 @@
     <ClInclude Include="lib\c_table.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="lib\argparse.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="custom\custom.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="conf\apis.deny" />
+    <None Include="conf\mploader.conf" />
   </ItemGroup>
 </Project>
