@@ -1,0 +1,6 @@
+GetCPInfoExW
+GetCommProperties
+EnumObjects
+GetEnhMetaFileHeader
+PostThreadMessageA
+GetFirmwareEnvironmentVariableA

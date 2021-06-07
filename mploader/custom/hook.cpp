@@ -1,6 +1,8 @@
-#include "utils/utils.h"
+#include <winsock.h>
+#pragma comment(lib,"ws2_32")
+
+#include "custom/custom.h"
 #include "utils/glob.h"
-#include "lib/cJSON.h"
 #include "lib/log.h"
 
 void _stdcall GetScanReplyHook() {
@@ -11,7 +13,7 @@ void _stdcall GetScanReplyHook() {
     return;
 }
 
-void _stdcall setGetScanRelpyHook() {
+void _stdcall SetGetScanRelpyHook() {
     PVOID pScanReply = (PVOID)((DWORD)hMpEngn + 0x2d91cf); //SCAN_REPLY *__thiscall SCAN_REPLY::SCAN_REPLY
     DWORD HookOffset = 0x7a;
     PVOID HookPoint = PVOID((DWORD)pScanReply + HookOffset);
@@ -81,7 +83,7 @@ void _stdcall ScanInfoHook() {
     }
 }
 
-void setScanInfoHook() {
+void SetScanInfoHook() {
     PVOID pScanInfoAuto = (PVOID)((DWORD)hMpEngn + 0x2ca986);
     DWORD HookOffset = 0x3;
     PVOID HookPoint = PVOID((DWORD)pScanInfoAuto + HookOffset);
@@ -103,7 +105,7 @@ void setScanInfoHook() {
     VirtualProtect(pScanInfoAuto, 0x5, flProtectOld, &flProtectOld);
 }
 
-void setGetAPIHook() {
+void SetPe_notify_api_call_Hook() {
     DWORD HookPoint = 0x5a53f9bd;
     PVOID hooker_addr = &GetAPIHook;
     DWORD flProtectOld = 0;
@@ -131,6 +133,7 @@ void __cdecl ModifyLoopThreshold() {
     PVOID ImmidateRet = NULL; 
     PVOID UpdateStateRet = NULL;
     DWORD pG_DT_params = 0x5abb686c;
+    PVOID bb_info_lf;
     __volatile("mov eax, eax");
 
     __asm {
@@ -141,7 +144,6 @@ void __cdecl ModifyLoopThreshold() {
         mov esi_tmp, esi;
         mov edi_tmp, edi;
     }
-    LogMessage("Expensive Loop was detected");
     if (!x86_emu_context) {
         __asm {
             mov ecx, ecx_tmp;
@@ -153,6 +155,8 @@ void __cdecl ModifyLoopThreshold() {
             mov x86_emu_context, eax;
         }
     }
+    
+    LogMessage("Expensive Loop was detected");
     LogMessage("Check [%x]", *(unsigned int*)((BYTE*)x86_emu_context + 0x3640));
 
     pScanExpensiveLoop = (PVOID)((DWORD)hMpEngn + 0x4a3918); //void scan_x32_context::scan_expensive_loop
@@ -176,7 +180,7 @@ void __cdecl ModifyLoopThreshold() {
         mov edx, edx_tmp;
         mov esi, esi_tmp;
         mov edi, edi_tmp;
-        add esp, 68h;
+        add esp, 0x74;
     }
     
     __asm { // original code
@@ -196,7 +200,7 @@ void __cdecl ModifyLoopThreshold() {
     }
 }
 
-void setModifyLoopThresholdHook() {
+void SetModifyLoopThresholdHook() {
     PVOID pScanExpensiveLoop = (PVOID)((DWORD)hMpEngn + 0x4a3918); //void scan_x32_context::scan_expensive_loop
     DWORD HookOffset = 0x12;
     PVOID HookPoint = PVOID((DWORD)pScanExpensiveLoop + HookOffset);
@@ -221,7 +225,7 @@ void setModifyLoopThresholdHook() {
 
 void __cdecl GetAPIHook() {
     __volatile("mov eax, eax");
-    instruction_count += 1;
+    //instruction_count += 1;
     DWORD eax_tmp = 0;
     DWORD ebx_tmp = 0;
     DWORD ecx_tmp = 0;
@@ -244,7 +248,7 @@ void __cdecl GetAPIHook() {
         mov api_addr, eax;
         mov x86_emu_context, edi;
     }
-    //PrintEmuRegister((PIL_X86Context)x86_emu_context);
+    PrintEmuRegister((PIL_X86Context)x86_emu_context);
     __volatile("mov eax, eax");
     __asm {
         pop edi;

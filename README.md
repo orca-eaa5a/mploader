@@ -33,8 +33,6 @@ This demo is a simple PoC of Customizable and Portable Windows Defender
 
 You can make the your own customized functions by hooking functions of Windows Defender.
 
-So I offer the mpengine.dll which has the MS Debug Symbol and 2 Simple PoC (ThreatTraceCallback, ScanInfoHook)
-
 
 
 <!-- GETTING STARTED -->
@@ -50,7 +48,10 @@ mploader.exe -f "target_file"
 
 ### Prerequisites
 
+* ISO C++17 표준(/std:c++17)
+  
 * MPEngine and it's AV Container
+  
   ```sh
   https://drive.google.com/drive/folders/1ESzYr4aD7kyrdwrwzVYhdR3A_DQA0H_1?usp=sharing
   ```
@@ -73,12 +74,14 @@ mploader.exe -f "target_file"
 * Options
 
    ```sh
-   -f file_name	: Target file to scan
-   -r (related)	: Get related threats of target file which was detected
-   -l (log)		: Log API call
-   -l reg			: Log API call with registry and stack
-   -u (unpack)		: Enable unpacking method
-   -t (trace)		: Get the file offset of threats detected
+   -h  --help                      : print Help page
+   -f  --file $filename            : target file to scan
+   -r  --relate                    : print related threats
+   -u  --unpack                    : enable unpacking method
+   -p  --percious                  : makes engine more precisely
+   -t  --trace                     : trace the treat detected point
+   -l  --log [--reg] [--ignore]    : enable logging api call with stack trace
+   -lt --loop-threshold            : modify maximum loop threshold
    ```
 
 <!-- LICENSE -->

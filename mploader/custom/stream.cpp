@@ -1,5 +1,5 @@
-#include <Windows.h>
 #include <stdio.h>
+#include <Windows.h>
 #include "utils/glob.h"
 
 #ifndef MAX_CHUNK_SIZE
@@ -42,4 +42,13 @@ DWORD ReadBuffer(PVOID src, ULONGLONG Offset, PVOID Buffer, DWORD Size, PDWORD S
         ScanSize = Size;
     }
     return TRUE;
+}
+
+WCHAR* GetStreamName(PVOID pStreamBufferDescripter) {
+    if (!file_name.empty()) {
+        return (WCHAR*)file_name.c_str();
+    }
+    else {
+        return (WCHAR*)L"input";
+    }
 }

@@ -7,61 +7,40 @@
 #include "mp_header/x86_context.h"
 #include "utils/glob.h"
 #include "utils/utils.h"
+#include "custom/custom.h"
 
-cJSON* ParseAPIInfo(BYTE* buffer){
-    cJSON *json = NULL;
-    json = cJSON_Parse((const char*)buffer);
-    if(json == NULL){
-        return NULL;
-    }
-    json = cJSON_GetObjectItem(json, "Dump");
-    return json;
+PVOID GetBBInfoLF(PIL_X86Context common_context) {
+    PVOID bb_info_lf = *(PVOID*)((DWORD)common_context + 0x36bc);
+    return bb_info_lf;
 }
 
-cJSON* ReadExportAPIInfo(char* FileName){
-    cJSON* json = NULL;
-    FILE* fp = fopen(FileName, "rt");
-    fseek(fp, 0, SEEK_SET);
-    fseek(fp, 0, SEEK_END);
-    unsigned int FileSize = ftell(fp);
-    unsigned int NumberOfBytesRead = 0;
-    fseek(fp, 0, SEEK_SET);
-    BYTE* buf = (BYTE*)calloc(FileSize, sizeof(BYTE));
-    NumberOfBytesRead = fread(buf, sizeof(BYTE), FileSize, fp);
-
-    json = ParseAPIInfo(buf);
-    fclose(fp);
-    free(buf);
-    return json;
+DWORD GetNumberOfNodesInList(PVOID BB_info_LF) {
+    PVOID LoopInfoStruct = *(PVOID*)((DWORD)BB_info_LF + 0x1D8);
+    return *(DWORD*)((DWORD)LoopInfoStruct + 0x50);
 }
 
-void GetAPIbyAddress(DWORD addr, cJSON* json, DWORD length) {
-    DWORD JsonArrLength = length;
-    for (int i = 0; JsonArrLength > i; i++) {
-        cJSON* member = cJSON_GetArrayItem(json, i);
-        char* DllName = cJSON_GetObjectItem(member, "name")->valuestring;
-        int ImageBase = cJSON_GetObjectItem(member, "base")->valueint;
-        int sizeOfImage = cJSON_GetObjectItem(member, "size")->valueint;
+WORD* GetLoopNodesList(PVOID BB_info_LF) {
+    PVOID LoopInfoStruct = *(PVOID*)((DWORD)BB_info_LF + 0x1D8);
+    PVOID ppLoopList = (PVOID)*(DWORD*)LoopInfoStruct;
+    return (WORD*)ppLoopList;
+}
 
-        if (ImageBase <= addr && addr < ImageBase + sizeOfImage) {
-            char* ApiName = NULL;
-            cJSON* ExpList = cJSON_GetObjectItem(member, "api");
-            DWORD ExpListLength = cJSON_GetArraySize(ExpList);
-            for (int j = 0; ExpListLength > j; j++) {
-                cJSON* Api = cJSON_GetArrayItem(ExpList, j);
-                ApiName = cJSON_GetObjectItem(Api, "name")->valuestring;
-                DWORD Offset = cJSON_GetObjectItem(Api, "addr")->valueint;
-                if ((addr ^ ImageBase) == Offset) {
-                    LogMessage("CALLED [%x] --> %s.%s", addr, DllName, ApiName);
-                    return;
-                }
-            }
-            LogMessage("[%s] internal function : %x", DllName, addr);
-            return;
-        }
-    }
-    LogMessage("NotEmulated Function [%x]", addr);
-    return;
+WORD GetCurrentNodeID(PIL_X86Context common_context) {
+    PVOID bb_info_lf = GetBBInfoLF(common_context);
+    WORD cur_node = *(WORD*)((DWORD)bb_info_lf + 0x70);
+    return cur_node;
+}
+
+WORD GetNextNodeID(PIL_X86Context common_context) {
+    PVOID bb_info_lf = GetBBInfoLF(common_context);
+    WORD loop_end_node = *(WORD*)((DWORD)bb_info_lf + 0x72);
+    return loop_end_node;
+}
+
+bool isLoopEscape(PIL_X86Context common_context) {
+    DWORD cur_node = GetCurrentNodeID(common_context);
+    if (cur_node >= c_next_node_id) return true;
+    else return false;
 }
 
 PVOID GetESP(PIL_X86Context common_context) {
@@ -74,10 +53,14 @@ PVOID GetESP(PIL_X86Context common_context) {
     return VEsp;
 }
 
-
 void PrintEmuRegister(PIL_X86Context common_context) {
-    LogMessage("callee : [%x]", common_context->callee);
-    GetAPIbyAddress(common_context->eip, (cJSON*)ApiInfoJson, ApiInfoSize);
+    if (common_context->eip == NULL) {
+        return;
+    }
+
+    if (GetAPIbyAddress(common_context->eip, (cJSON*)ApiInfoJson, ApiInfoSize) == -1) {
+        return;
+    }
     
     if (get_reg_flag) {
         PVOID _v_esp = GetESP(common_context);
@@ -106,5 +89,5 @@ void PrintEmuRegister(PIL_X86Context common_context) {
         RegInfo.WriteTable(Align::Left);
 
     }
-   
+    
 }

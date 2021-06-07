@@ -1,9 +1,7 @@
-#include <Windows.h>
 #include <iostream>
-#include "mp_header/scanreply.h"
-#include "mp_header/x86_context.h"
 #include "lib/cJSON.h"
 
+/*
 DWORD FullScanNotifyCallback(PSCAN_REPLY Scan);
 DWORD ThreatTraceCallback(PSCAN_REPLY Scan);
 DWORD ReadStream(PVOID fd, ULONGLONG Offset, PVOID Buffer, DWORD Size, PDWORD SizeRead);
@@ -17,11 +15,23 @@ extern void setScanInfoHook();
 extern void setGetAPIHook();
 extern void _stdcall setGetScanRelpyHook();
 extern void __cdecl GetAPIHook();
+*/
+
 extern void DumpHex(const void* data, size_t size);
 extern std::string integerToHSTR(unsigned int i);
-extern cJSON* ParseAPIInfo(BYTE* buffer);
-extern cJSON* ReadExportAPIInfo(char* FileName);
-extern void GetAPIbyAddress(DWORD addr, cJSON* json, DWORD length);
+wchar_t *GetWC(const char *c);
+extern cJSON* ParseAPIInfo(unsigned char* buffer);
+extern cJSON* ReadExportAPIInfo(const wchar_t* FileName);
+
+/*
+extern int GetAPIbyAddress(DWORD addr, cJSON* json, DWORD length);
+extern PVOID GetBBInfoLF(PIL_X86Context common_context);
 extern void PrintEmuRegister(PIL_X86Context common_context);
+extern bool isLoopEscape(PIL_X86Context common_context);
+extern DWORD GetNumberOfNodesInList(PVOID BB_info_LF);
+extern WORD* GetLoopNodesList(PVOID BB_info_LF);
+extern WORD GetCurrentNodeID(PIL_X86Context common_context);
+extern WORD GetNextNodeID(PIL_X86Context common_context);
 extern void ModifyLoopThreshold();
 extern void setModifyLoopThresholdHook();
+*/
